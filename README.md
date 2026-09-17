@@ -65,7 +65,8 @@ SoC-Dashboard/
 │   ├── glossary.md          # ★ 术语表（唯一真相源，持续维护）
 │   ├── methodology.md       # 建模方法论与抽象层级依据
 │   ├── adr/                 # 架构决策记录
-│   └── reading-notes/       # 规范与论文阅读笔记
+│   └── reading-notes/
+│       └── architects/      # ★ 知名架构师文章摘录与评注（Keller/Colwell/Dally 等）
 ├── src/socsim/
 │   ├── kernel/              # DES 内核、时钟域、RNG、在线统计
 │   ├── axi/                 # 事务、五通道、主从端口、outstanding、ID 保序
