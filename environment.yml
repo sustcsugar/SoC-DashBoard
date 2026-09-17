@@ -1,0 +1,42 @@
+# SoC-Dashboard / socsim 运行环境（遗留 conda 路径）
+#
+# ⚠️ 本项目现已改用 uv 管理（见 pyproject.toml + uv.lock，uv sync 一条命令建好）。
+# 本文件保留作为 conda 备选路径，不再随功能更新维护——新增依赖只会进 pyproject.toml。
+#
+# 创建：conda env create -f environment.yml
+# 移除：conda env remove -n socsim
+#
+# Git Bash 下 conda activate 不可用（需 conda init bash + 重开终端）。
+# 本项目脚本统一用 conda run 或环境解释器绝对路径调用：
+#   conda run -n socsim python -m pytest
+#   C:/Users/admin/miniconda3/envs/socsim/python.exe -m pytest
+#
+# ⚠️ 版本锁定说明（踩过的坑，不要随意放开）
+#
+# matplotlib 与 numpy 必须配套锁版本。conda-forge 曾经把 matplotlib 解到 3.11.2
+# 并额外拉入 PySide6（395 个 Qt6 DLL），结果 fig.savefig() 会触发**原生崩溃**
+# （Windows 0xc06d007f，延迟加载 DLL 失败）——不是 Python 异常，进程直接消失，
+# 连 traceback 都没有。锁定到 3.10.8 + 2.4.4 后正常。
+#
+# 这类问题的调试成本很高：因为崩在原生层，Python 的异常处理完全不起作用。
+# 排查路径是先用最小复现脚本二分定位到具体 API，再对比可用环境的包版本来回退。
+
+name: socsim
+
+channels:
+  - conda-forge
+
+dependencies:
+  - python=3.11
+  - pip
+  - pip:
+      # --- 数值与绘图（版本必须配套，见上方说明）---
+      - numpy==2.4.4
+      - scipy>=1.14,<1.18
+      - matplotlib==3.10.8
+      # --- 纯 Python ---
+      - pydantic>=2.9
+      - pyyaml>=6.0
+      - jinja2>=3.1
+      # --- 测试 ---
+      - pytest>=8.0

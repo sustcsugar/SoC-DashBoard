@@ -1,0 +1,37 @@
+[build-system]
+requires = ["setuptools>=68"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "socsim"
+version = "0.1.0"
+description = "SoC 总线带宽 / 拥塞 / 互锁的交易级离散事件仿真器"
+readme = "README.md"
+requires-python = ">=3.11"
+dependencies = [
+    "numpy>=2.0",
+    "scipy>=1.14,<1.18",
+    # matplotlib 锁版本的教训（2026-09）：conda-forge 曾解析到 3.11.2 并拉入 PySide6，
+    # 与 pip 文件混装后 savefig 触发 Windows 原生崩溃（0xc06d007f，无 traceback）。
+    # 3.10.8 的 PyPI wheel 在本机验证可用；uv.lock 会固化这个选择。
+    "matplotlib==3.10.8",
+    "pydantic>=2.9",
+    "pyyaml>=6.0",
+    "jinja2>=3.1",
+]
+
+# uv sync 默认安装 dev 组（PEP 735 依赖组，比 optional-dependencies 更适合开发工具）
+[dependency-groups]
+dev = ["pytest>=8.0"]
+
+[project.scripts]
+socsim = "socsim.cli:main"
+
+[tool.setuptools.packages.find]
+where = ["src"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+pythonpath = ["src", "tests"]
+addopts = "-q --strict-markers"
+filterwarnings = ["error::DeprecationWarning"]
